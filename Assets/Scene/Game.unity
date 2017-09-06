@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lookTarget: {fileID: 1178519779}
-  offset: {x: 0, y: 2, z: -3}
+  offset: {x: 0, y: 3, z: 0}
 --- !u!4 &1178519779 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4076728699229854, guid: 86dce5937beb44f44859b8c9f8e6465c,

@@ -7,6 +7,10 @@ using UnityEngine;
 public class PlayerMotor : MonoBehaviour {
 
     private const float LANE_DISTANCE = 3.0f;
+    private const float TURN_SPEED = 0.5f;
+
+    // Animation
+    private Animator _anim;
 
     // Movement
     private CharacterController _contorller;
@@ -19,6 +23,7 @@ public class PlayerMotor : MonoBehaviour {
     private void Start()
     {
         _contorller = GetComponent<CharacterController>();
+        _anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -48,16 +53,63 @@ public class PlayerMotor : MonoBehaviour {
         // Calculate our move delta
         Vector3 moveVector = Vector3.zero;
         moveVector.x = (targetPosition - transform.position).normalized.x * _speed;
-        moveVector.y = -0.1f;
+
+        bool isGrounded = _IsGrounded();
+        _anim.SetBool("Grounded", isGrounded);
+
+        // Calculate Y
+        if (_IsGrounded()) // is grounded
+        {
+            _verticalVelocity = -0.1f;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _verticalVelocity = _jumpForce;
+                _anim.SetTrigger("Jump");
+            }
+        }
+        else
+        {
+            _verticalVelocity -= (_gravity * Time.deltaTime);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _verticalVelocity = -_jumpForce;
+            }
+        }
+
+        moveVector.y = _verticalVelocity;
         moveVector.z = _speed;
 
         // Move the pengu
         _contorller.Move(moveVector * Time.deltaTime);
+
+        // Rotate the pengu to where he is going
+        Vector3 dir = _contorller.velocity;
+
+        if (dir != Vector3.zero)
+        {
+            dir.y = 0f;
+            transform.forward = Vector3.Lerp(transform.forward, dir, TURN_SPEED);
+        }
     }
 
     private void _MoveLane(bool goingRight)
     {
         _desiredLane += (goingRight) ? 1 : -1;
         _desiredLane = Mathf.Clamp(_desiredLane, 0, 2);
+    }
+
+    private bool _IsGrounded()
+    {
+        Ray groundRay = new Ray(
+            new Vector3(
+                _contorller.bounds.center.x,
+                _contorller.bounds.center.y - _contorller.bounds.extents.y + 0.2f,
+                _contorller.bounds.center.z),
+            Vector3.down);
+        Debug.DrawRay(groundRay.origin, groundRay.direction, Color.cyan, 1f);
+
+        return Physics.Raycast(groundRay, 0.3f);
     }
 }
