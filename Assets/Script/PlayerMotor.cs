@@ -28,6 +28,7 @@ public class PlayerMotor : MonoBehaviour {
 
     private void Update()
     {
+
         // Gather input on which lane we should be
 		if(MobileInput.Instance.SwipeLeft)
         {
@@ -53,7 +54,7 @@ public class PlayerMotor : MonoBehaviour {
         // Calculate our move delta
         Vector3 moveVector = Vector3.zero;
         moveVector.x = (targetPosition - transform.position).normalized.x * _speed;
-
+		Debug.Log (targetPosition);
         bool isGrounded = _IsGrounded();
         _anim.SetBool("Grounded", isGrounded);
 

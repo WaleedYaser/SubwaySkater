@@ -36,7 +36,7 @@ public class MobileInput : MonoBehaviour
 		#region Standalone Inputs
 		if (Input.GetMouseButtonDown (0)) {
 			tap = true;
-			startTouch = Input.mousePosition;
+			startTouch = (Vector2) Input.mousePosition;
 		} else if (Input.GetMouseButtonUp (0)) {
 			startTouch = swipeDelta = Vector2.zero;
 		}
@@ -48,7 +48,7 @@ public class MobileInput : MonoBehaviour
 				tap = true;
 				startTouch = Input.touches[0].position;
 			} else if (Input.touches [0].phase == TouchPhase.Ended || Input.touches [0].phase == TouchPhase.Canceled) {
-				startTouch = swipeDelta = Vector3.zero;
+				startTouch = swipeDelta = Vector2.zero;
 			}
 		}
 		#endregion
@@ -58,7 +58,7 @@ public class MobileInput : MonoBehaviour
 		if (startTouch != Vector2.zero) {
 
 			// Check standalone
-			if (Input.GetMouseButtonDown(0)) {
+			if (Input.GetMouseButton(0)) {
 				swipeDelta = (Vector2) Input.mousePosition - startTouch;
 			}
 		
@@ -75,17 +75,17 @@ public class MobileInput : MonoBehaviour
 
 				if (Mathf.Abs (x) > Mathf.Abs (y)) {
 					// Horizontal
-					if (x > 0) {
-						swipeRight = true;
-					} else {
+					if (x < 0) {
 						swipeLeft = true;
+					} else {
+						swipeRight = true;
 					}
 				} else {
 					// Vertical
-					if (y > 0) {
-						swipeUp = true;
-					} else {
+					if (y < 0) {
 						swipeDown = true;
+					} else {
+						swipeUp = true;
 					}
 				}
 
