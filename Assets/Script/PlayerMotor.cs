@@ -67,11 +67,12 @@ public class PlayerMotor : MonoBehaviour {
         {
             _verticalVelocity = -0.1f;
 
-			if (MobileInput.Instance.SwipeUp)
-            {
-                _verticalVelocity = _jumpForce;
-                _anim.SetTrigger("Jump");
-            }
+			if (MobileInput.Instance.SwipeUp) {
+				_verticalVelocity = _jumpForce;
+				_anim.SetTrigger ("Jump");
+			} else if (MobileInput.Instance.SwipeDown) {
+				_StartSliding ();
+			}
         }
         else
         {
@@ -105,6 +106,21 @@ public class PlayerMotor : MonoBehaviour {
         _desiredLane = Mathf.Clamp(_desiredLane, 0, 2);
     }
 
+	private void _StartSliding ()
+	{
+		_anim.SetBool ("Sliding", true);
+		_contorller.height *= 0.5f;
+		_contorller.center *= 0.5f;
+		Invoke ("_StopSliding", 1f);
+	}
+
+	private void _StopSliding ()
+	{
+		_contorller.height *= 2f;
+		_contorller.center *= 2f;
+		_anim.SetBool ("Sliding", false);
+	}
+
     private bool _IsGrounded()
     {
         Ray groundRay = new Ray(
@@ -121,6 +137,22 @@ public class PlayerMotor : MonoBehaviour {
 	public void StartRunning()
 	{
 		isRunning = true;
+		_anim.SetTrigger ("StartRunnig");
+	}
+
+	private void _Crash()
+	{
+		_anim.SetTrigger ("Death");
+		isRunning = false;
+	}
+
+	private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		switch (hit.gameObject.tag) {
+		case "Obstacle":
+			_Crash ();
+			break;
+		}
 	}
 }
 
