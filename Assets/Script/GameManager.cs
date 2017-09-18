@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+	private const float COIN_SCORE_AMOUNT = 5.0f;
+
 	public static GameManager Instance { set; get; }
 
 	private bool isGameStarted;
@@ -12,12 +14,17 @@ public class GameManager : MonoBehaviour {
 
 	// UI
 	public Text scoreText, coinText, modifierText;
-	private float score, coinScore, modifierScore;
+	private float score, lastScore, coinScore, modifierScore;
 
 	private void Awake()
 	{
 		Instance = this;
-		UpdateScore ();
+		modifierScore = 1;
+
+		scoreText.text = score.ToString ("0");
+		coinText.text = coinScore.ToString ("0");
+		modifierText.text = "x" + modifierScore.ToString ("0.0");
+
 		motor = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMotor> ();
 	}
 
@@ -27,12 +34,29 @@ public class GameManager : MonoBehaviour {
 			isGameStarted = true;
 			motor.StartRunning ();
 		}
+
+		if (isGameStarted) {
+			score += (Time.deltaTime * modifierScore);
+
+			if (lastScore != (int)score) {
+				lastScore = (int) score;
+				scoreText.text = score.ToString ("0");
+			}
+		}
 	}
 
-	public void UpdateScore()
+	public void GetCoin()
 	{
-		scoreText.text = score.ToString ();
-		coinText.text = coinScore.ToString ();
-		modifierText.text = modifierScore.ToString ();
+		coinScore++;
+		coinText.text = coinScore.ToString ("0");
+		score += COIN_SCORE_AMOUNT;
+		scoreText.text = score.ToString("0");
+
+	}
+		
+	public void UpdateModifier(float modifierAmount)
+	{
+		modifierScore = 1.0f + modifierAmount;
+		modifierText.text = "x" + modifierScore.ToString ("0.0");
 	}
 }

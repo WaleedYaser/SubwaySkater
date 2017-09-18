@@ -19,19 +19,34 @@ public class PlayerMotor : MonoBehaviour {
     private float _jumpForce = 4.0f;
     private float _gravity = 12.0f;
     private float _verticalVelocity;
-    private float _speed = 7.0f;
     private int _desiredLane = 1; // 0 = Left, 1 = Middle, 2 = Right
+
+	// Speed Modifier
+	private float _originalSpeed = 7.0f;
+	private float _speed;
+	private float _speedIncreaseLastTick;
+	private float _speedIncreaseTime = 2.5f;
+	private float _speedIncreaseAmount = 0.1f;
+
 
     private void Start()
     {
         _contorller = GetComponent<CharacterController>();
         _anim = GetComponent<Animator>();
+		_speed = _originalSpeed;
     }
 
     private void Update()
     {
 		if (!isRunning)
 			return;
+
+		// speed modifier
+		if ((Time.time - _speedIncreaseLastTick) > _speedIncreaseTime) {
+			_speedIncreaseLastTick = Time.time;
+			_speed += _speedIncreaseAmount;
+			GameManager.Instance.UpdateModifier (_speed - _originalSpeed);
+		}
 
         // Gather input on which lane we should be
 		if(MobileInput.Instance.SwipeLeft)
@@ -58,7 +73,7 @@ public class PlayerMotor : MonoBehaviour {
         // Calculate our move delta
         Vector3 moveVector = Vector3.zero;
         moveVector.x = (targetPosition - transform.position).normalized.x * _speed;
-		Debug.Log (targetPosition);
+
         bool isGrounded = _IsGrounded();
         _anim.SetBool("Grounded", isGrounded);
 
