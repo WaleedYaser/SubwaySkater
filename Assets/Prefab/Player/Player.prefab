@@ -550,9 +550,10 @@ GameObject:
   - component: {fileID: 95663961823045794}
   - component: {fileID: 143211266869942192}
   - component: {fileID: 114503946376242410}
+  - component: {fileID: 114701037371137526}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1128,6 +1129,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04af164889a24854ca61ddb9fb629d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRunning: 0
+--- !u!114 &114701037371137526
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1986474306052440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceee229493eabe34fb58086ca64580cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!137 &137685714742858132
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -1212,7 +1225,7 @@ CharacterController:
   serializedVersion: 2
   m_Height: 1
   m_Radius: 0.25
-  m_SlopeLimit: 45
+  m_SlopeLimit: 50
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
